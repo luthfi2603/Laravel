@@ -1,0 +1,62 @@
+* cara create
+    a.  $post = new App\Models\Post
+        $post->title = 'Title'
+        $post->excerpt = 'excerpt'
+        $post->body = 'body'
+        $post->save()
+
+    b. 
+        Post::create([
+            'title' => 'Judul Ketiga',
+            'slug' => 'judul-ketiga',
+            'excerpt' => 'Lorem ipsum pertama',
+            'body' => '<p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Facilis accusamus, totam rem quia quaerat beatae nihil, ab saepe amet eveniet alias est aut eligendi quo mollitia quis ea error quibusdam dolor! Libero vero architecto eveniet possimus nisi, totam porro minus, quo ut fuga itaque saepe dolore! Saepe, reprehenderit.</p><p>Quae voluptatem suscipit ea aut libero earum voluptas. Natus ullam tenetur fuga. Maiores deleniti, nostrum molestiae aliquam consequuntur quisquam distinctio aut reprehenderit illum quia commodi obcaecati asperiores, temporibus totam?</p><p>Asperiores molestias iure odit! Nobis possimus exercitationem deserunt velit consequatur voluptas facere veritatis. Et maxime alias dolore voluptate unde mollitia cumque atque quod, a, modi ut voluptas eaque, sed optio dolorum recusandae at ab soluta commodi aliquid. Quis, ipsum ab iusto adipisci earum nemo, dolorem recusandae perspiciatis officiis ipsam incidunt autem officia saepe quod, corporis soluta illum sed? Minima numquam animi nam deleniti consectetur corporis dicta quae eligendi? Fuga dolorum quisquam suscipit iusto.</p>'
+        ])
+
+* cara update
+    a. Post::find(1)->update(['title' => 'Judul Pertama'])
+    b. Post::where('title', 'Judul Pertama')->update(['excerpt' => 'excerpt pertama berubah'])
+
+* route model binding
+    Ini adalah sebuah cara untuk menampilkan halaman single post, jika kita ingin ke halaman single post
+    pastilah kita mengirimkan sesuatu seperti id, nah di route nya itu pasti ditangkap dengan {id},
+    lalu ada nama controller nya dan fungsi yang dituju, di parameter fungsi nya kita membuat
+    model (User $id) lalu kita langsung saja mereturn $id ke halaman single post, maka nanti yang akan 
+    muncul hanya record yang mempunyai id itu.
+
+* mass asignment
+    kita harus membuat protected $guarded = ['id']
+    di model
+
+* Cara mencari record dengan keadaan tertentu
+    Post::where('category_id', 1)->get()
+
+* fetch api gambar
+    https://source.unsplash.com/1200x400?{{ $posts[0]->category->name }}
+
+* N + 1 Problem
+    * eager loading
+        menambahkan 
+            with(['author', 'category']) 
+        di dalam controller ketika kita ingin mengambil data
+        cara ini dapat dilakukan jika tidak menggunakan route model binding
+        ketika retreive data, nanti pada saat diambil, sekalian diambil juga data dari tabel lain
+        contoh : 
+        $data = User::with(['post', 'category'])->get();
+        
+        ada juga cara lainnya yaitu menambahkan
+            protected $with = ['nama_model', 'nama_model']
+        di dalam model yang mau kita buat eager loadingnya
+    * lazy eager loading
+        Ini kita lakukan ketika kita melakukan route model binding
+        pada saat kita sudah mendapatkan satu baris record maka itu belum terhubung dengan data-data
+        dari tabel yang lain maka kita harus menambahkan
+            load('category', 'author')
+        contoh : 
+        $category->posts->load('category', 'author');
+
+* query scope
+    dibuat di dalam model dengan function yang nama nya itu depannya harus scope
+    contoh : 
+    public function scopeFilter($query, array $filters){}
+    Post::latest()->filter(request(['search', 'category', 'author']))->paginate(7)->withQueryString()
