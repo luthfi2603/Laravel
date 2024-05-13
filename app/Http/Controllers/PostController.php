@@ -35,4 +35,18 @@ class PostController extends Controller {
             "post" => $post
         ]);
     }
+
+    public function createTest(){
+        return view('test');
+    }
+    
+    public function storeTest(){
+        return response()->json(['test' => true]);
+        dd(true);
+    }
+    
+    public function storeTest2(){
+        return response()->json(['test' => true]);
+        dd(true);
+    }
 }
