@@ -5,8 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Test</title>
+    @livewireStyles
 </head>
 <body>
+    <livewire:counter /> 
     <form method="GET" action="/test-store">
         <button>Submit</button>
     </form>
@@ -35,5 +37,6 @@
             }
         };
     </script>
+    @livewireScripts
 </body>
 </html>
